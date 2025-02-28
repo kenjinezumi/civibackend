@@ -1,5 +1,5 @@
 # app/schemas/form_schema.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
 
@@ -8,8 +8,10 @@ from datetime import datetime
 #
 class SkipLogicCondition(BaseModel):
     referenceQuestionIndex: int
-    operator: str
-    value: str
+    operator: str  # e.g. '==', '!=', 'contains', etc.
+    value: str     # the value to compare
+    targetSectionId: Optional[int] = None
+    targetQuestionId: Optional[int] = None
     action: str
 
 #
@@ -33,11 +35,13 @@ class QuestionOut(BaseModel):
     required: bool
     placeholder: str
     helpText: str
-    choices: List[str]
-    skipLogic: Optional[SkipLogicCondition] = None
+    choices: List[str] = []
+
+    skipLogic: Optional[SkipLogicCondition] = Field(None, alias="skip_logic")
 
     class Config:
         orm_mode = True
+
 
 #
 # SECTION

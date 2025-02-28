@@ -26,7 +26,9 @@ def list_forms(db: Session = Depends(get_db)):
 
 @router.get("/{form_id}", response_model=FormOut)
 def retrieve_form(form_id: int, db: Session = Depends(get_db)):
-    return FormController.get_form(db, form_id)
+    form_obj = FormController.get_form(db, form_id)
+    return form_obj  # fastapi auto-converts to FormOut
+
 
 @router.put("/{form_id}", response_model=FormOut)
 def update_form(form_id: int, updates: FormUpdate, db: Session = Depends(get_db)):
