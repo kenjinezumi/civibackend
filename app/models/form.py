@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
-
 class Form(Base):
     __tablename__ = "forms"
 
@@ -16,5 +15,13 @@ class Form(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     created_by = Column(String, nullable=True)
 
-    sections = relationship("Section", back_populates="form", cascade="all, delete-orphan")
+    # Instead of sections = ...
+    # We now have pages relationship
+    pages = relationship(
+        "Page",
+        back_populates="form",
+        cascade="all, delete-orphan"
+    )
+
+    # partner forms
     published_forms = relationship("PartnerForm", back_populates="form", cascade="all, delete-orphan")

@@ -1,36 +1,82 @@
 # app/schemas/form_schema.py
 from pydantic import BaseModel
+from typing import List, Optional
 from datetime import datetime
 
-from typing import List, Optional
+#
+# Skip Logic
+#
+class SkipLogicCondition(BaseModel):
+    referenceQuestionIndex: int
+    operator: str
+    value: str
+    action: str
 
-class QuestionBase(BaseModel):
+#
+# QUESTION
+#
+class QuestionCreate(BaseModel):
     label: str
-    type: str = "text"
+    type: str = "text"      # e.g. 'radio', 'rating'
     required: bool = False
+    placeholder: str = ""
+    helpText: str = ""
+    choices: List[str] = []
+    skipLogic: Optional[SkipLogicCondition] = None
+    # ratingMin: Optional[int] = None
+    # ratingMax: Optional[int] = None
 
-class QuestionCreate(QuestionBase):
-    pass
-
-class QuestionOut(QuestionBase):
+class QuestionOut(BaseModel):
     id: int
+    label: str
+    type: str
+    required: bool
+    placeholder: str
+    helpText: str
+    choices: List[str]
+    skipLogic: Optional[SkipLogicCondition] = None
 
     class Config:
         orm_mode = True
 
-class SectionBase(BaseModel):
+#
+# SECTION
+#
+class SectionCreate(BaseModel):
     title: str
-
-class SectionCreate(SectionBase):
     questions: List[QuestionCreate] = []
 
-class SectionOut(SectionBase):
+class SectionOut(BaseModel):
     id: int
+    title: str
     questions: List[QuestionOut] = []
 
     class Config:
         orm_mode = True
 
+#
+# PAGE
+#
+class PageCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    # If you want unsectioned:
+    unsectioned: List[QuestionCreate] = []
+    sections: List[SectionCreate] = []
+
+class PageOut(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = None
+    unsectioned: List[QuestionOut] = []
+    sections: List[SectionOut] = []
+
+    class Config:
+        orm_mode = True
+
+#
+# FORM
+#
 class FormBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -39,7 +85,12 @@ class FormBase(BaseModel):
     created_by: Optional[str] = None
 
 class FormCreate(FormBase):
-    sections: List[SectionCreate] = []
+    title: str
+    description: str
+    published: bool
+    country: str
+    created_by: str
+    pages: List[PageCreate] = []
 
 class FormUpdate(BaseModel):
     title: Optional[str]
@@ -47,12 +98,13 @@ class FormUpdate(BaseModel):
     published: Optional[bool]
     country: Optional[str]
     created_by: Optional[str]
+    pages: Optional[List[PageCreate]]
 
 class FormOut(FormBase):
     id: int
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-    sections: List[SectionOut] = []
+    pages: List[PageOut] = []
 
     class Config:
         orm_mode = True
