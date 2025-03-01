@@ -48,7 +48,9 @@ class FormService:
                         required=q_data.required,
                         placeholder=q_data.placeholder,
                         helpText=q_data.helpText,
-                        choices=q_data.choices,  # stored in JSON column
+                        choices=q_data.choices,  
+                        ratingMin=q_data.ratingMin,
+                        ratingMax=q_data.ratingMax,
                         skip_logic=(q_data.skipLogic.dict() if q_data.skipLogic else None)
                     )
                     sec_obj.questions.append(q_obj)

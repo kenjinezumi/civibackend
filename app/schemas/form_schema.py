@@ -25,8 +25,8 @@ class QuestionCreate(BaseModel):
     helpText: str = ""
     choices: List[str] = []
     skipLogic: Optional[SkipLogicCondition] = None
-    # ratingMin: Optional[int] = None
-    # ratingMax: Optional[int] = None
+    ratingMin: Optional[int] = None
+    ratingMax: Optional[int] = None
 
 class QuestionOut(BaseModel):
     id: int
@@ -36,6 +36,8 @@ class QuestionOut(BaseModel):
     placeholder: str
     helpText: str
     choices: List[str] = []
+    ratingMin: Optional[int] = None
+    ratingMax: Optional[int] = None
 
     skipLogic: Optional[SkipLogicCondition] = Field(None, alias="skip_logic")
 
