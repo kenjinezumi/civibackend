@@ -1,31 +1,61 @@
-# app/repositories/partner_form_repository.py
-from typing import List
 from sqlalchemy.orm import Session
 from app.models.partner_form import PartnerForm
+from app.models.partner_form_answer import PartnerFormAnswer
+from sqlalchemy.exc import NoResultFound
 
 class PartnerFormRepository:
     @staticmethod
-    def list_by_form_id(db: Session, form_id: int) -> List[PartnerForm]:
+    def get_by_partner_id(db: Session, partner_id: str) -> PartnerForm:
+        """
+        Retrieves a partner form entry by its partner_id (slug).
+        """
+        return db.query(PartnerForm).filter(PartnerForm.partner_id == partner_id).first()
+
+    @staticmethod
+    def get_by_email(db: Session, email: str) -> PartnerForm:
+        """
+        Retrieves a partner form entry by email.
+        """
+        return db.query(PartnerForm).filter(PartnerForm.partner_email == email).first()
+
+    @staticmethod
+    def list_by_form_id(db: Session, form_id: int):
+        """
+        Lists all partner forms linked to a specific form.
+        """
         return db.query(PartnerForm).filter(PartnerForm.form_id == form_id).all()
 
     @staticmethod
-    def get_by_id(db: Session, pf_id: int) -> PartnerForm:
-        return db.query(PartnerForm).filter(PartnerForm.id == pf_id).first()
+    def create(db: Session, partner_form: PartnerForm) -> PartnerForm:
+        """
+        Creates a new partner form entry.
+        """
+        db.add(partner_form)
+        db.commit()
+        db.refresh(partner_form)
+        return partner_form
 
     @staticmethod
-    def create(db: Session, pf_obj: PartnerForm) -> PartnerForm:
-        db.add(pf_obj)
+    def update(db: Session, partner_form: PartnerForm) -> PartnerForm:
+        """
+        Updates an existing partner form entry.
+        """
         db.commit()
-        db.refresh(pf_obj)
-        return pf_obj
+        db.refresh(partner_form)
+        return partner_form
 
     @staticmethod
-    def save(db: Session, pf_obj: PartnerForm) -> PartnerForm:
+    def delete(db: Session, partner_form: PartnerForm):
+        """
+        Deletes a partner form entry.
+        """
+        db.delete(partner_form)
         db.commit()
-        db.refresh(pf_obj)
-        return pf_obj
 
     @staticmethod
-    def delete(db: Session, pf_obj: PartnerForm) -> None:
-        db.delete(pf_obj)
-        db.commit()
+    def regenerate_password(db: Session, partner_form: PartnerForm, new_password: str) -> PartnerForm:
+        """
+        Regenerates a new password for the partner.
+        """
+        partner_form.password = new_password
+        return PartnerFormRepository.update(db, partner_form)

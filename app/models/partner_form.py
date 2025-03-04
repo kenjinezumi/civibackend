@@ -19,3 +19,4 @@ class PartnerForm(Base):
     password = Column(String, nullable=True)
 
     completion_percentage = Column(Float, default=0.0)
+    answer_record = relationship("PartnerFormAnswer", uselist=False, back_populates="partner_form")

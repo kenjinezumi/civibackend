@@ -1,6 +1,6 @@
 # app/schemas/form_schema.py
-from pydantic import BaseModel, Field
-from typing import List, Optional
+from pydantic import BaseModel, Field, validator
+from typing import List, Optional, Union
 from datetime import datetime
 
 #
@@ -24,7 +24,7 @@ class QuestionCreate(BaseModel):
     placeholder: str = ""
     helpText: str = ""
     choices: List[str] = []
-    skipLogic: Optional[SkipLogicCondition] = None
+    skipLogic: Optional[SkipLogicCondition] = Field(None, alias="skip_logic")
     ratingMin: Optional[int] = None
     ratingMax: Optional[int] = None
 
@@ -106,8 +106,17 @@ class FormUpdate(BaseModel):
     country: Optional[str]
     created_by: Optional[str]
     pages: Optional[List[PageCreate]]
-    due_date: Optional[datetime] = None
+    due_date: Optional[Union[datetime, str]] = None  # Accepts both datetime & str
 
+    @validator("due_date", pre=True, always=True)
+    def parse_due_date(cls, value):
+        if value in (None, "", "null"):  # Handle empty string & 'null' string
+            return None  # Convert to NULL for DB
+        try:
+            return datetime.fromisoformat(value)  # Ensure proper datetime format
+        except ValueError:
+            raise ValueError("Invalid datetime format. Expected ISO format (YYYY-MM-DD).")
+        
 class FormOut(FormBase):
     id: int
     created_at: Optional[datetime] = None

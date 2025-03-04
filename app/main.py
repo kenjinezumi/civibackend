@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.routers.form_router import router as form_router
 from app.routers.partner_form_router import router as partner_router
-from app.routers.partner_form_router import router as partner_router
+from app.routers.public_partner_router import router as public_partner_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(form_router)
 app.include_router(partner_router)
 app.include_router(partner_router)
+app.include_router(public_partner_router)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

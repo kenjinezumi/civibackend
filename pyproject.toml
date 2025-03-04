@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "CiviForm-like backend using FastAPI"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"
+packages = [{include = "app"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -14,6 +15,7 @@ alembic = "^1.10.4"
 psycopg2 = "^2.9.6"   # or psycopg2-binary
 pydantic = "^1.10.7"  # or "pydantic[dotenv]" etc. if you want extra
 python-dotenv = "^0.21.1"
+bcrypt = "^4.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.3.1"
