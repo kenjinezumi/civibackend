@@ -15,8 +15,8 @@ class FormService:
             description=form_data.description,
             published=form_data.published,
             country=form_data.country,
-            created_by=form_data.created_by
-        )
+            created_by=form_data.created_by,
+            due_date=form_data.due_date  )
 
         # Build each Page
         for page_data in form_data.pages:
@@ -77,6 +77,8 @@ class FormService:
         # Update top-level
         if updates.title is not None:
             form_obj.title = updates.title
+        if updates.due_date is not None:
+            form_obj.due_date = updates.due_date
         if updates.description is not None:
             form_obj.description = updates.description
         if updates.published is not None:

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.routers.form_router import router as form_router
 from app.routers.partner_form_router import router as partner_router
+from app.routers.partner_form_router import router as partner_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(form_router)
+app.include_router(partner_router)
 app.include_router(partner_router)
 
 if __name__ == "__main__":

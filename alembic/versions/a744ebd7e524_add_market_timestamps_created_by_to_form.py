@@ -1,8 +1,8 @@
-"""Initial schema
+"""Add market, timestamps, created_by to Form
 
-Revision ID: 9f6c2edb7a10
+Revision ID: a744ebd7e524
 Revises: 
-Create Date: 2025-02-28 12:04:18.254536
+Create Date: 2025-03-04 11:16:11.844764
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '9f6c2edb7a10'
+revision: str = 'a744ebd7e524'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,6 +29,7 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_by', sa.String(), nullable=True),
+    sa.Column('due_date', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_forms_id'), 'forms', ['id'], unique=False)
@@ -47,11 +48,11 @@ def upgrade() -> None:
     sa.Column('partner_id', sa.String(), nullable=False),
     sa.Column('partner_name', sa.String(), nullable=True),
     sa.Column('partner_email', sa.String(), nullable=True),
-    sa.Column('public_url', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=True),
     sa.Column('completion_percentage', sa.Float(), nullable=True),
     sa.ForeignKeyConstraint(['form_id'], ['forms.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('public_url')
+    sa.UniqueConstraint('partner_id')
     )
     op.create_index(op.f('ix_partner_forms_id'), 'partner_forms', ['id'], unique=False)
     op.create_table('sections',
@@ -69,6 +70,8 @@ def upgrade() -> None:
     sa.Column('required', sa.Boolean(), nullable=True),
     sa.Column('placeholder', sa.String(), nullable=True),
     sa.Column('helpText', sa.String(), nullable=True),
+    sa.Column('ratingMin', sa.Integer(), nullable=True),
+    sa.Column('ratingMax', sa.Integer(), nullable=True),
     sa.Column('choices', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('skip_logic', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
     sa.Column('section_id', sa.Integer(), nullable=False),

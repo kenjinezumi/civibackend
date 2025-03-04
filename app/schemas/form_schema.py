@@ -89,6 +89,7 @@ class FormBase(BaseModel):
     published: bool = False
     country: Optional[str] = None
     created_by: Optional[str] = None
+    due_date: Optional[datetime] = None
 
 class FormCreate(FormBase):
     title: str
@@ -105,6 +106,7 @@ class FormUpdate(BaseModel):
     country: Optional[str]
     created_by: Optional[str]
     pages: Optional[List[PageCreate]]
+    due_date: Optional[datetime] = None
 
 class FormOut(FormBase):
     id: int
